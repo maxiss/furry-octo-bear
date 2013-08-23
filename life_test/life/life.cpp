@@ -1,3 +1,6 @@
+#include <iostream>
+#include <stdlib.h>
+
 #include "life.h"
 
 #define   setBit(reg, bit)         (reg |= (1<<bit))
@@ -53,7 +56,7 @@ int LgField::getCharPos(int x)
 
 LgGame::LgGame()
 {
-   fieldWidth = 10;
+   fieldWidth = 50;
    fieldHeight = 10;
    currentField = 0;
    nextField = 1;
@@ -72,12 +75,13 @@ void LgGame::generateNext()
    int neighborCount,
        currentState;
    for (int x = 0; x < fieldWidth; x++)
-      for (int y = 0; y < fieldHeight; y++) {
+      for (int y = 0; y < fieldHeight; y++)
+      {
          neighborCount = getNeighborCount(x, y);
          currentState   = getCellState(x, y);
          if ( (currentState == OFF) && (neighborCount == 3) )
             setCellNewState(x, y, ON);
-         if ( (currentState == ON) && ( (neighborCount < 3) || (neighborCount > 4) ) )
+         if ( (currentState == ON) && ( (neighborCount < 2) || (neighborCount > 3) ) )
             setCellNewState(x, y, OFF);
       }
    changeFields();
@@ -132,4 +136,23 @@ void LgGame::changeFields()
    int tmp = currentField;
    currentField = nextField;
    nextField = tmp;
+}
+
+void LgGame::generateRandom()
+{
+   for (int x = 0; x < fieldWidth; x++)
+      for (int y = 0; y < fieldHeight; y++)
+         setCellNewState(x, y, !(rand()%4));
+   changeFields();
+}
+
+void LgGame::draw()
+{
+   std::cout << std::endl;
+   for (int y = 0; y < fieldHeight; y++)
+   {
+      for (int x = 0; x < fieldWidth; x++)
+         std::cout << getCellState(x, y);
+      std::cout << std::endl;
+   }
 }
